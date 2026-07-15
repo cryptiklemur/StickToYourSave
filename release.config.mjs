@@ -30,7 +30,6 @@ export default {
                         name: 'StickToYourSave',
                         path: '.',
                         workshopIds: { stable: '3765032020' },
-                        previewfile: 'About/Preview.png',
                     },
                 ],
             },
