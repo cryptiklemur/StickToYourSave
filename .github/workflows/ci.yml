@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  game-image:
+    name: rimworld 1.6 image
+    runs-on: ubuntu-latest
+    outputs:
+      image-ref: ${{ steps.image.outputs.image-ref }}
+    steps:
+      - name: Build RimWorld 1.6 game image
+        id: image
+        uses: cryptiklemur/steam-game-image-action@v1
+        with:
+          steam-username: ${{ secrets.STEAM_USERNAME }}
+          steam-config-vdf: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
+          app-id: '294100'
+          branch: 'version-1.6.4633'
+          image: ghcr.io/${{ github.repository_owner }}/rimworld-game
+          registry-password: ${{ secrets.GITHUB_TOKEN }}
+          include-paths: RimWorldLinux_Data/Managed
+
+  build:
+    name: build
+    needs: game-image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Stage game assemblies from image
+        env:
+          GAME_IMAGE: ${{ needs.game-image.outputs.image-ref }}
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull -q "$GAME_IMAGE"
+          cid="$(docker create "$GAME_IMAGE")"
+          mkdir -p "$RUNNER_TEMP/rimworld"
+          docker cp "$cid:/game/RimWorldLinux_Data" "$RUNNER_TEMP/rimworld/RimWorldLinux_Data"
+          docker rm -f "$cid"
+
+      - name: dotnet build (real game assemblies)
+        run: dotnet build Source/StickToYourSave/StickToYourSave.csproj -c Release "-p:GameManagedDir=$RUNNER_TEMP/rimworld/RimWorldLinux_Data/Managed"
+
+      - name: dotnet build (Krafs reference assemblies)
+        run: dotnet build Source/StickToYourSave/StickToYourSave.csproj -c Release
