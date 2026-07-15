@@ -14,8 +14,7 @@ internal static class MainMenu_ClearLockButton_Patch
     {
         if (Current.ProgramState != ProgramState.Entry) return;
         if (!SaveLock.IsLocked) return;
-        string newColonyLabel = "NewColony".Translate();
-        if (!optList.Any(opt => opt.label == newColonyLabel)) return;
+        if (!optList.Any(opt => opt is ListableOption_WebLink)) return;
         string clearLabel = "STYS_ClearLock".Translate();
         if (optList.Any(opt => opt.label == clearLabel)) return;
         optList.Add(new ListableOption(clearLabel, () => Confirmations.TripleConfirm(SaveLock.Clear)));
