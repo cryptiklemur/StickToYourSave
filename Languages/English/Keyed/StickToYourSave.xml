@@ -3,7 +3,7 @@
     <STYS_Confirm1>Are you sure....?</STYS_Confirm1>
     <STYS_Confirm2>You wanted to be kept on track</STYS_Confirm2>
     <STYS_Confirm3>Cmon, keep playing that save man...</STYS_Confirm3>
-    <STYS_LoadBlocked>That save belongs to a different colony. You are locked to {0}. Win it, lose it, or delete its saves if you want out.</STYS_LoadBlocked>
-    <STYS_NewColonyBlocked>You already have a colony: {0}. Finish that story first. The lock clears when you win, get wiped, or delete the saves.</STYS_NewColonyBlocked>
+    <STYS_LoadBlocked>Ah ah ah! You didn't say the magic word. That save isn't {0}, and you're locked to {0}. Win it, lose it, delete its saves, or use "Clear save lock" in the menu if you really want out.</STYS_LoadBlocked>
+    <STYS_NewColonyBlocked>Ah ah ah! You already have a colony: {0}. Finish that story first. The lock lifts when you win, get wiped, delete the saves, or hit "Clear save lock" in the menu.</STYS_NewColonyBlocked>
     <STYS_ClearLock>Clear save lock</STYS_ClearLock>
 </LanguageData>

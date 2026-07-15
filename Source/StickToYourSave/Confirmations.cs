@@ -12,8 +12,15 @@ public static class Confirmations
                 () => Show("STYS_Confirm3".Translate(), onConfirmed)));
     }
 
+    public static void Block(TaggedString text)
+    {
+        Find.WindowStack.Add(new Dialog_NedryMessage(text));
+    }
+
     private static void Show(TaggedString text, Action confirmedAct)
     {
-        Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(text, confirmedAct, destructive: true));
+        Find.WindowStack.Add(new Dialog_NedryMessage(text,
+            buttonAText: "Confirm".Translate(), buttonAAction: confirmedAct,
+            buttonBText: "GoBack".Translate(), buttonADestructive: true));
     }
 }

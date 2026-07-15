@@ -11,7 +11,7 @@ internal static class GameDataSaveLoader_LoadGame_Patch
     {
         if (SaveLock.BlocksLoad(saveFileName))
         {
-            Find.WindowStack.Add(new Dialog_MessageBox("STYS_LoadBlocked".Translate(SaveLock.LockedName)));
+            Confirmations.Block("STYS_LoadBlocked".Translate(SaveLock.LockedName));
             return Control.Cancel;
         }
 
