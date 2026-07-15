@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+    <name>Stick To Your Save</name>
+    <packageId>CryptikLemur.StickToYourSave</packageId>
+    <author>CryptikLemur</author>
+    <url>https://github.com/cryptiklemur/StickToYourSave</url>
+    <supportedVersions>
+        <li>1.6</li>
+    </supportedVersions>
+    <modDependencies>
+        <li>
+            <packageId>concordlib.concord</packageId>
+            <displayName>Concord</displayName>
+            <steamWorkshopUrl>steam://url/CommunityFilePage/3758333473</steamWorkshopUrl>
+        </li>
+    </modDependencies>
+    <loadAfter>
+        <li>concordlib.concord</li>
+    </loadAfter>
+    <description>Locks RimWorld to the colony you are already playing.
+
+While the lock is active, the load screen only accepts saves from your current playthrough, and starting a new colony is blocked. The lock clears on its own when you win the game, lose the colony, or delete its save files.
+
+Really sure you want out early? There is a main menu button that clears the lock, behind three confirmations. Disabling the mod asks three times too. You installed this for a reason.
+
+Requires Concord.</description>
+</ModMetaData>

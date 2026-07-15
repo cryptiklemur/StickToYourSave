@@ -1,0 +1,7 @@
+bin/
+obj/
+Assemblies/
+node_modules/
+*.user
+.vs/
+.idea/
