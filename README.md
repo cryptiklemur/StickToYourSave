@@ -31,7 +31,7 @@ Output lands in `Assemblies/`. The Concord packages (`Concord.Ref`, `Concord.Ana
 
 ## Releasing
 
-CI builds the mod against real 1.6 assemblies pulled from a game image produced by [steam-game-image-action](https://github.com/cryptiklemur/steam-game-image-action). Releases go through semantic-release. Workshop publishing with [semantic-release-steam](https://www.npmjs.com/package/semantic-release-steam) turns on once you fill in the workshop id in `release.config.mjs` after the first manual publish.
+CI builds the mod against real 1.6 assemblies pulled from a game image produced by [steam-game-image-action](https://github.com/RimWorks/steam-game-image-action). Releases go through semantic-release. Workshop publishing with [semantic-release-steam](https://www.npmjs.com/package/semantic-release-steam) turns on once you fill in the workshop id in `release.config.mjs` after the first manual publish.
 
 Required repo secrets: `STEAM_USERNAME`, `STEAM_CONFIG_VDF_B64`.
 
