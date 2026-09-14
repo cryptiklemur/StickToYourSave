@@ -5,3 +5,5 @@ node_modules/
 *.user
 .vs/
 .idea/
+dist/
+About/PublishStamp.txt
