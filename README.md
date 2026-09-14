@@ -1,5 +1,8 @@
 # Stick To Your Save
 
+[![Steam Workshop](https://img.shields.io/badge/Steam_Workshop-Stick_To_Your_Save-1b2838?logo=steam&logoColor=white)](https://steamcommunity.com/sharedfiles/filedetails/?id=3765032020)
+[![Discord](https://img.shields.io/badge/Discord-Cryptiks_Mods-5865F2?logo=discord&logoColor=white)](https://discord.gg/tbcKN8e4mZ)
+
 A RimWorld 1.6 mod that locks you to your current colony's saves. Loading anything else is blocked, and so is starting a new colony, until you win, get wiped, or delete the colony's saves.
 
 Patching is done with [Concord](https://steamcommunity.com/sharedfiles/filedetails/?id=3758333473) instead of Harmony.
