@@ -18,7 +18,7 @@ export default {
             '@semantic-release/exec',
             {
                 prepareCmd:
-                    'node scripts/write-stamp.mjs && dotnet build Source/StickToYourSave/StickToYourSave.csproj -c Release -p:Version=${nextRelease.version} && rm -rf dist && mkdir -p dist/StickToYourSave && cp -r About Assemblies Languages Textures LICENSE README.md dist/StickToYourSave/ && cd dist && zip -qr StickToYourSave-${nextRelease.version}.zip StickToYourSave',
+                    'node scripts/write-stamp.mjs && dotnet build Source/StickToYourSave/StickToYourSave.csproj -c Release -p:Version=${nextRelease.version} && npx package-mod StickToYourSave ${nextRelease.version}',
             },
         ],
         [

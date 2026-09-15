@@ -15,10 +15,11 @@ package.json
 package-lock.json
 release.config.mjs
 StickToYourSave.slnx
-LICENSE
 
 *.md
 *.pdb
 
 dist
 scripts
+artifacts
+nupkgs
