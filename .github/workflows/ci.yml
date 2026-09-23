@@ -1,59 +1,55 @@
 name: ci
 
 on:
-  push:
-    branches: [main]
+  workflow_call:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
-  packages: write
 
 jobs:
   game-image:
-    name: rimworld 1.6 image
-    runs-on: ubuntu-latest
-    outputs:
-      image-ref: ${{ steps.image.outputs.image-ref }}
-    steps:
-      - name: Build RimWorld 1.6 game image
-        id: image
-        uses: cryptiklemur/steam-game-image-action@v1
-        with:
-          steam-username: ${{ secrets.STEAM_USERNAME }}
-          steam-config-vdf: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
-          app-id: '294100'
-          branch: 'version-1.6.4633'
-          image: ghcr.io/${{ github.repository_owner }}/rimworld-game
-          registry-password: ${{ secrets.GITHUB_TOKEN }}
-          include-paths: RimWorldLinux_Data/Managed
+    name: game image
+    uses: RimWorks/mod-ci/.github/workflows/game-image.yml@v1
+    permissions:
+      contents: read
+      packages: write
+    with:
+      branch: version-1.6.4633
+      include-paths: RimWorldLinux_Data/Managed
+    secrets:
+      STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+      STEAM_CONFIG_VDF_B64: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
 
   build:
     name: build
     needs: game-image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
+    uses: RimWorks/mod-ci/.github/workflows/dotnet-build.yml@v1
+    permissions:
+      contents: read
+      checks: write
+      packages: read
+    with:
+      solution: Source/StickToYourSave/StickToYourSave.csproj
+      game-image: ${{ needs.game-image.outputs.image-ref }}
+      # No test project in this mod yet.
+      test: false
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: 10.0.x
+  prose:
+    name: prose
+    uses: RimWorks/mod-ci/.github/workflows/prose.yml@v1
+    permissions:
+      contents: read
 
-      - name: Stage game assemblies from image
-        env:
-          GAME_IMAGE: ${{ needs.game-image.outputs.image-ref }}
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-          docker pull -q "$GAME_IMAGE"
-          cid="$(docker create "$GAME_IMAGE")"
-          mkdir -p "$RUNNER_TEMP/rimworld"
-          docker cp "$cid:/game/RimWorldLinux_Data" "$RUNNER_TEMP/rimworld/RimWorldLinux_Data"
-          docker rm -f "$cid"
-
-      - name: dotnet build (real game assemblies)
-        run: dotnet build Source/StickToYourSave/StickToYourSave.csproj -c Release "-p:GameManagedDir=$RUNNER_TEMP/rimworld/RimWorldLinux_Data/Managed"
-
-      - name: dotnet build (Krafs reference assemblies)
-        run: dotnet build Source/StickToYourSave/StickToYourSave.csproj -c Release
+  links:
+    name: links
+    uses: RimWorks/mod-ci/.github/workflows/links.yml@v1
+    permissions:
+      contents: read
+    with:
+      args: --config lychee.toml --no-progress README.md README.template.md

@@ -1,0 +1,56 @@
+name: weekly-verify
+
+on:
+  schedule:
+    - cron: '0 15 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: verify against current RimWorld, then republish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+
+      - name: dotnet restore
+        run: dotnet restore StickToYourSave.slnx
+
+      - name: Record resolved RimWorld version
+        run: |
+          version=$(dotnet list StickToYourSave.slnx package \
+            | awk '/Krafs.Rimworld.Ref/ {print $NF; exit}')
+          echo "RIMWORLD_REF=${version:-unknown}" >> "$GITHUB_ENV"
+          echo "resolved RimWorld ref: ${version:-unknown}"
+
+      - name: dotnet build
+        run: dotnet build StickToYourSave.slnx -c Release --nologo --no-restore
+
+      - name: dotnet test
+        run: |
+          set -o pipefail
+          dotnet test StickToYourSave.slnx -c Release --nologo --no-build \
+            --logger "console;verbosity=normal" | tee test-output.txt
+          passed=$(grep -oE 'Passed:[[:space:]]+[0-9]+' test-output.txt | grep -oE '[0-9]+' | tail -1)
+          echo "TESTS_PASSED=${passed:-unknown}" >> "$GITHUB_ENV"
+
+      - uses: RimWorks/mod-ci/.github/actions/steam-republish@v1
+        with:
+          workshop-id: ${{ vars.WORKSHOP_ID }}
+          steam-username: ${{ secrets.STEAM_USERNAME }}
+          steam-config-vdf-b64: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
+          verified-rimworld: ${{ env.RIMWORLD_REF }}
+          verified-tests: ${{ env.TESTS_PASSED }}

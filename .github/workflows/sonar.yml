@@ -1,0 +1,29 @@
+name: sonar
+
+on:
+  workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonar-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analyze:
+    name: analyze
+    uses: RimWorks/mod-ci/.github/workflows/sonar.yml@v1
+    permissions:
+      contents: read
+    with:
+      solution: StickToYourSave.slnx
+      project-key: cryptiklemur_StickToYourSave
+      exclusions: Styles/**,Textures/**,artifacts/**,**/bin/**,**/obj/**
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -11,12 +11,12 @@ Patching is done with [Concord](https://steamcommunity.com/sharedfiles/filedetai
 
 The lock lives in mod settings, outside any save file. It stores the world's identity (its persistent random value and seed) plus the save file names that belong to the playthrough.
 
-- Saving binds the lock to the current colony and records the file name. Autosaves count.
+- Saving binds the lock to the current colony and records the filename. Autosaves count.
 - Loading an allowed save records it the same way.
 - Loading anything else gets a refusal dialog instead of a load.
 - Opening the scenario select screen while locked gets the same treatment.
 
-The lock releases at three points: the credits screen (any victory), the game-over dialog (colony wipe), or when every tracked save file is gone from disk. There's also a "Clear save lock" button on the main menu behind three confirmations, and disabling the mod in the mod list goes through the same three.
+The lock releases at the credits screen after any victory. It also releases at the game-over dialog after a colony wipe, or once every tracked save file is gone from disk. A "Clear save lock" button on the main menu does it too, behind three confirmations. Turning the mod off in the mod list goes through the same three.
 
 ## Building
 
