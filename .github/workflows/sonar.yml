@@ -21,6 +21,7 @@ jobs:
     uses: RimWorks/mod-ci/.github/workflows/sonar.yml@v1
     permissions:
       contents: read
+      packages: read
     with:
       solution: StickToYourSave.slnx
       project-key: cryptiklemur_StickToYourSave
