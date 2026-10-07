@@ -30,7 +30,7 @@ jobs:
       image: ghcr.io/${{ github.repository_owner }}/rimworld-game
       force: ${{ inputs.force || false }}
       branches: |
-        1.6=version-1.6.4633
+        1.6=public
     secrets:
       STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
       STEAM_CONFIG_VDF_B64: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
