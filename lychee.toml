@@ -5,6 +5,7 @@
 exclude = [
   "^https://steamcommunity\\.com/",
   "^https://sonarcloud\\.io/",
+  "^https://www\\.npmjs\\.com/",
 ]
 
 exclude_path = []
