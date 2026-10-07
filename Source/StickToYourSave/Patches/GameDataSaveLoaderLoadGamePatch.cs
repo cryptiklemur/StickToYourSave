@@ -4,7 +4,7 @@ using Verse;
 namespace StickToYourSave.Patches;
 
 [Patch(typeof(GameDataSaveLoader))]
-internal static class GameDataSaveLoader_LoadGame_Patch {
+internal static class GameDataSaveLoaderLoadGamePatch {
     [Inject(At.Head, nameof(GameDataSaveLoader.LoadGame), parameterTypes: [typeof(string)])]
     private static Control Prefix(string saveFileName) {
         if (SaveLock.BlocksLoad(saveFileName)) {

@@ -11,11 +11,11 @@ public static class Confirmations {
     }
 
     public static void Block(TaggedString text) {
-        Find.WindowStack.Add(new Dialog_NedryMessage(text));
+        Find.WindowStack.Add(new NedryMessageDialog(text));
     }
 
     private static void Show(TaggedString text, Action confirmedAct) {
-        Find.WindowStack.Add(new Dialog_NedryMessage(text,
+        Find.WindowStack.Add(new NedryMessageDialog(text,
             buttonAText: "Confirm".Translate(), buttonAAction: confirmedAct,
             buttonBText: "GoBack".Translate(), buttonADestructive: true));
     }

@@ -19,11 +19,11 @@ public static class SaveLock {
         }
     }
 
-    public static string LockedName => StickToYourSaveMod.Settings.lockedWorldName ?? "your colony";
+    public static string LockedName => StickToYourSaveMod.Settings.LockedWorldName ?? "your colony";
 
     public static bool BlocksLoad(string saveFileName) {
         if (!IsLocked) return false;
-        return !StickToYourSaveMod.Settings.trackedSaveFiles.Contains(saveFileName, StringComparer.OrdinalIgnoreCase);
+        return !StickToYourSaveMod.Settings.TrackedSaveFiles.Contains(saveFileName, StringComparer.OrdinalIgnoreCase);
     }
 
     public static bool BlocksNewColony() {
@@ -46,10 +46,10 @@ public static class SaveLock {
 
     public static void Clear() {
         LockSettings settings = StickToYourSaveMod.Settings;
-        settings.lockedWorldId = 0;
-        settings.lockedSeed = null;
-        settings.lockedWorldName = null;
-        settings.trackedSaveFiles.Clear();
+        settings.LockedWorldId = 0;
+        settings.LockedSeed = null;
+        settings.LockedWorldName = null;
+        settings.TrackedSaveFiles.Clear();
         StickToYourSaveMod.SaveSettings();
     }
 
@@ -58,21 +58,21 @@ public static class SaveLock {
         if (info == null) return;
         LockSettings settings = StickToYourSaveMod.Settings;
         bool sameWorld = settings.HasLock
-            && settings.lockedWorldId == info.persistentRandomValue
-            && settings.lockedSeed == info.seedString;
+            && settings.LockedWorldId == info.persistentRandomValue
+            && settings.LockedSeed == info.seedString;
         if (!sameWorld) {
-            settings.lockedWorldId = info.persistentRandomValue;
-            settings.lockedSeed = info.seedString;
-            settings.lockedWorldName = info.name;
-            settings.trackedSaveFiles.Clear();
+            settings.LockedWorldId = info.persistentRandomValue;
+            settings.LockedSeed = info.seedString;
+            settings.LockedWorldName = info.name;
+            settings.TrackedSaveFiles.Clear();
         }
-        if (!settings.trackedSaveFiles.Contains(fileName, StringComparer.OrdinalIgnoreCase)) {
-            settings.trackedSaveFiles.Add(fileName);
+        if (!settings.TrackedSaveFiles.Contains(fileName, StringComparer.OrdinalIgnoreCase)) {
+            settings.TrackedSaveFiles.Add(fileName);
         }
         StickToYourSaveMod.SaveSettings();
     }
 
     private static bool AnyTrackedFileExists(LockSettings settings) {
-        return settings.trackedSaveFiles.Any(name => File.Exists(GenFilePaths.FilePathForSavedGame(name)));
+        return settings.TrackedSaveFiles.Any(name => File.Exists(GenFilePaths.FilePathForSavedGame(name)));
     }
 }

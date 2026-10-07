@@ -5,7 +5,7 @@ using Verse;
 namespace StickToYourSave.Patches;
 
 [Patch]
-internal abstract class WindowStack_Add_Patch : WindowStack {
+internal abstract class WindowStackAddPatch : WindowStack {
     [Inject(At.Head, nameof(WindowStack.Add), parameterTypes: [typeof(Window)])]
     private Control Prefix(Window window) {
         if (window is not Page_SelectScenario) return Control.Continue;
