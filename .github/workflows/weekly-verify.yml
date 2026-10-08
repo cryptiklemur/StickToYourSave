@@ -26,6 +26,14 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Install release dependencies
+        run: npm ci --ignore-scripts
+
       - name: dotnet restore
         run: dotnet restore StickToYourSave.slnx
 
@@ -47,8 +55,9 @@ jobs:
           passed=$(grep -oE 'Passed:[[:space:]]+[0-9]+' test-output.txt | grep -oE '[0-9]+' | tail -1)
           echo "TESTS_PASSED=${passed:-unknown}" >> "$GITHUB_ENV"
 
-      - uses: RimWorks/mod-ci/.github/actions/steam-republish@v1
+      - uses: RimWorks/mod-ci/.github/actions/steam-republish@v4
         with:
+          solution: StickToYourSave.slnx
           workshop-id: ${{ vars.WORKSHOP_ID }}
           steam-username: ${{ secrets.STEAM_USERNAME }}
           steam-config-vdf-b64: ${{ secrets.STEAM_CONFIG_VDF_B64 }}

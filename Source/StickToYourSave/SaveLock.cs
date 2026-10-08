@@ -6,14 +6,11 @@ using Verse;
 
 namespace StickToYourSave;
 
-public static class SaveLock
-{
+public static class SaveLock {
     private static string? pendingLoadFile;
 
-    public static bool IsLocked
-    {
-        get
-        {
+    public static bool IsLocked {
+        get {
             LockSettings settings = StickToYourSaveMod.Settings;
             if (!settings.HasLock) return false;
             if (AnyTrackedFileExists(settings)) return true;
@@ -22,70 +19,60 @@ public static class SaveLock
         }
     }
 
-    public static string LockedName => StickToYourSaveMod.Settings.lockedWorldName ?? "your colony";
+    public static string LockedName => StickToYourSaveMod.Settings.LockedWorldName ?? "your colony";
 
-    public static bool BlocksLoad(string saveFileName)
-    {
+    public static bool BlocksLoad(string saveFileName) {
         if (!IsLocked) return false;
-        return !StickToYourSaveMod.Settings.trackedSaveFiles.Contains(saveFileName, StringComparer.OrdinalIgnoreCase);
+        return !StickToYourSaveMod.Settings.TrackedSaveFiles.Contains(saveFileName, StringComparer.OrdinalIgnoreCase);
     }
 
-    public static bool BlocksNewColony()
-    {
+    public static bool BlocksNewColony() {
         return IsLocked;
     }
 
-    public static void NotePendingLoad(string saveFileName)
-    {
+    public static void NotePendingLoad(string saveFileName) {
         pendingLoadFile = saveFileName;
     }
 
-    public static void OnGameLoaded()
-    {
+    public static void OnGameLoaded() {
         if (pendingLoadFile == null) return;
         BindToCurrentGame(pendingLoadFile);
         pendingLoadFile = null;
     }
 
-    public static void OnGameSaved(string fileName)
-    {
+    public static void OnGameSaved(string fileName) {
         BindToCurrentGame(fileName);
     }
 
-    public static void Clear()
-    {
+    public static void Clear() {
         LockSettings settings = StickToYourSaveMod.Settings;
-        settings.lockedWorldId = 0;
-        settings.lockedSeed = null;
-        settings.lockedWorldName = null;
-        settings.trackedSaveFiles.Clear();
+        settings.LockedWorldId = 0;
+        settings.LockedSeed = null;
+        settings.LockedWorldName = null;
+        settings.TrackedSaveFiles.Clear();
         StickToYourSaveMod.SaveSettings();
     }
 
-    private static void BindToCurrentGame(string fileName)
-    {
+    private static void BindToCurrentGame(string fileName) {
         WorldInfo? info = Current.Game?.World?.info;
         if (info == null) return;
         LockSettings settings = StickToYourSaveMod.Settings;
         bool sameWorld = settings.HasLock
-            && settings.lockedWorldId == info.persistentRandomValue
-            && settings.lockedSeed == info.seedString;
-        if (!sameWorld)
-        {
-            settings.lockedWorldId = info.persistentRandomValue;
-            settings.lockedSeed = info.seedString;
-            settings.lockedWorldName = info.name;
-            settings.trackedSaveFiles.Clear();
+            && settings.LockedWorldId == info.persistentRandomValue
+            && settings.LockedSeed == info.seedString;
+        if (!sameWorld) {
+            settings.LockedWorldId = info.persistentRandomValue;
+            settings.LockedSeed = info.seedString;
+            settings.LockedWorldName = info.name;
+            settings.TrackedSaveFiles.Clear();
         }
-        if (!settings.trackedSaveFiles.Contains(fileName, StringComparer.OrdinalIgnoreCase))
-        {
-            settings.trackedSaveFiles.Add(fileName);
+        if (!settings.TrackedSaveFiles.Contains(fileName, StringComparer.OrdinalIgnoreCase)) {
+            settings.TrackedSaveFiles.Add(fileName);
         }
         StickToYourSaveMod.SaveSettings();
     }
 
-    private static bool AnyTrackedFileExists(LockSettings settings)
-    {
-        return settings.trackedSaveFiles.Any(name => File.Exists(GenFilePaths.FilePathForSavedGame(name)));
+    private static bool AnyTrackedFileExists(LockSettings settings) {
+        return settings.TrackedSaveFiles.Any(name => File.Exists(GenFilePaths.FilePathForSavedGame(name)));
     }
 }
