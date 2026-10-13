@@ -67,3 +67,13 @@ jobs:
       contents: read
     with:
       args: --config lychee.toml --no-progress README.md README.template.md
+
+  gate:
+    name: ci gate
+    if: always()
+    needs: [images, build, prose, links]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: RimWorks/mod-ci/.github/actions/gate@v4
+        with:
+          results: ${{ join(needs.*.result, ' ') }}
