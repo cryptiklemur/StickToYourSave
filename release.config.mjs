@@ -11,7 +11,6 @@ export default releaseConfig({
         {
             name: 'StickToYourSave',
             workshopId: '3765032020',
-            previewfile: new URL('./About/Preview.png', import.meta.url).pathname,
         },
     ],
     assets: [{ path: './dist/StickToYourSave-*.zip', label: 'Stick To Your Save (drop into RimWorld/Mods)' }],

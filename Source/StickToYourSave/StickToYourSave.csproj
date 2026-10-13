@@ -22,8 +22,8 @@
     <RimRefVersion Condition="'$(RimRefVersion)' == ''">1.6.4871</RimRefVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Concord.Ref" Version="0.24.2" PrivateAssets="all" />
-    <PackageReference Include="Concord.Analyzers" Version="0.24.2" PrivateAssets="all" />
+    <PackageReference Include="Concord.Ref" Version="0.25.0" PrivateAssets="all" />
+    <PackageReference Include="Concord.Analyzers" Version="0.25.0" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
