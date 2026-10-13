@@ -18,6 +18,11 @@ jobs:
   release:
     name: semantic-release
     runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.after.outputs.published }}
+      version: ${{ steps.after.outputs.version }}
+      tag: ${{ steps.after.outputs.tag }}
+      previous-tag: ${{ steps.before.outputs.tag }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -37,17 +42,6 @@ jobs:
       - name: Install release dependencies
         run: npm ci --ignore-scripts
 
-      - name: Set up SteamCMD
-        uses: buildalon/setup-steamcmd@v1
-
-      - name: Restore Steam config
-        env:
-          STEAM_CONFIG_VDF_B64: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
-        run: |
-          mkdir -p "$STEAM_DIR/config"
-          printf '%s' "$STEAM_CONFIG_VDF_B64" | base64 -d > "$STEAM_DIR/config/config.vdf"
-          echo "STEAM_CONFIG_VDF=$STEAM_DIR/config/config.vdf" >> "$GITHUB_ENV"
-
       - name: Record the tag before releasing
         id: before
         run: echo "tag=$(git describe --tags --abbrev=0 2>/dev/null || true)" >> "$GITHUB_OUTPUT"
@@ -55,16 +49,41 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
-          STEAM_CONFIG_VDF: ${{ env.STEAM_CONFIG_VDF }}
-          STEAMCMD_PATH: ${{ env.STEAM_CMD }}/steamcmd.sh
+          SPLIT_PUBLISH: '1'
         run: ./node_modules/.bin/semantic-release
 
-      - uses: RimWorks/mod-ci/.github/actions/discord-release@v4
+      - name: Read the tag it just cut
+        id: after
+        run: |
+          tag=$(git describe --tags --abbrev=0 2>/dev/null || true)
+          if [ "$tag" = "${{ steps.before.outputs.tag }}" ] || [ -z "$tag" ]; then
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "tag=$tag" >> "$GITHUB_OUTPUT"
+            echo "version=${tag#v}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload the release zips
+        if: steps.after.outputs.published == 'true'
+        uses: actions/upload-artifact@v7
         with:
-          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          mod-name: Stick To Your Save
-          role-ids: ${{ vars.DISCORD_ROLE_IDS }}
-          workshop-id: '3765032020'
-          embed-color: 95A5A6
-          previous-tag: ${{ steps.before.outputs.tag }}
+          name: release-zips
+          path: dist/StickToYourSave-*.zip
+          if-no-files-found: error
+
+  publish:
+    needs: release
+    if: needs.release.outputs.published == 'true'
+    uses: RimWorks/mod-ci/.github/workflows/publish.yml@v4
+    permissions:
+      contents: read
+    secrets: inherit
+    with:
+      version: ${{ needs.release.outputs.version }}
+      zip-artifact: release-zips
+      discord-mod-name: Stick To Your Save
+      discord-workshop-id: '3765032020'
+      discord-embed-color: 95A5A6
+      tag: ${{ needs.release.outputs.tag }}
+      previous-tag: ${{ needs.release.outputs.previous-tag }}
