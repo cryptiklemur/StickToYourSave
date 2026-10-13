@@ -1,7 +1,9 @@
+import { splitPublish } from '@rimworks/mod-ci';
+
 /** @type {import('semantic-release').GlobalConfig} */
 export default {
     branches: ['main'],
-    plugins: [
+    plugins: splitPublish([
         [
             '@semantic-release/commit-analyzer',
             {
@@ -44,5 +46,5 @@ export default {
                 ],
             },
         ],
-    ],
+    ]),
 };
