@@ -78,7 +78,11 @@ jobs:
     uses: RimWorks/mod-ci/.github/workflows/publish.yml@v4
     permissions:
       contents: read
-    secrets: inherit
+    secrets:
+      STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
+      STEAM_PASSWORD: ${{ secrets.STEAM_PASSWORD }}
+      STEAM_CONFIG_VDF_B64: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     with:
       version: ${{ needs.release.outputs.version }}
       zip-artifact: release-zips
