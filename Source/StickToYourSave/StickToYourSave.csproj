@@ -1,11 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <GameVersion Condition="'$(GameVersion)' == ''">1.6</GameVersion>
+    <!-- 1.7 runs WaylithCLR at net10.0; 1.5 and 1.6 run Unity's mono at net472 -->
+    <TargetFramework Condition="'$(GameVersion)' == '1.7'">net10.0</TargetFramework>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">net472</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>StickToYourSave</AssemblyName>
     <RootNamespace>StickToYourSave</RootNamespace>
-    <OutDir>$(MSBuildProjectDirectory)/../../Assemblies/</OutDir>
+    <OutDir>$(MSBuildProjectDirectory)/../../$(GameVersion)/Assemblies/</OutDir>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
     <DebugType>none</DebugType>
@@ -14,23 +17,25 @@
   <PropertyGroup>
     <UseGameDlls>false</UseGameDlls>
     <UseGameDlls Condition="'$(GameManagedDir)' != '' and Exists('$(GameManagedDir)/Assembly-CSharp.dll')">true</UseGameDlls>
+    <RimRefVersion Condition="'$(GameVersion)' == '1.5'">1.5.4409</RimRefVersion>
+    <RimRefVersion Condition="'$(GameVersion)' == '1.7'">1.7.4977-alpha.1</RimRefVersion>
+    <RimRefVersion Condition="'$(RimRefVersion)' == ''">1.6.4871</RimRefVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
     <PackageReference Include="Concord.Ref" Version="0.24.2" PrivateAssets="all" />
     <PackageReference Include="Concord.Analyzers" Version="0.24.2" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
   <ItemGroup Condition="'$(UseGameDlls)' != 'true'">
-    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4871" PrivateAssets="all" />
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="$(RimRefVersion)" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup Condition="'$(UseGameDlls)' == 'true'">
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(GameManagedDir)/Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(GameManagedDir)/UnityEngine.CoreModule.dll</HintPath>
-      <Private>false</Private>
+    <!-- a glob, not two names: 1.7 ships UnityStubs.dll where 1.5 and 1.6 ship UnityEngine.CoreModule.dll -->
+    <Reference Include="$(GameManagedDir)/*.dll"
+               Exclude="$(GameManagedDir)/System.*.dll;$(GameManagedDir)/System.dll;$(GameManagedDir)/Microsoft.*.dll;$(GameManagedDir)/mscorlib.dll;$(GameManagedDir)/netstandard.dll;$(GameManagedDir)/WindowsBase.dll">
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
 </Project>

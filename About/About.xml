@@ -5,7 +5,9 @@
     <author>CryptikLemur</author>
     <url>https://github.com/cryptiklemur/StickToYourSave</url>
     <supportedVersions>
+        <li>1.5</li>
         <li>1.6</li>
+        <li>1.7</li>
     </supportedVersions>
     <modDependencies>
         <li>
