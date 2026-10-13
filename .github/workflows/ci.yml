@@ -30,7 +30,9 @@ jobs:
       image: ghcr.io/${{ github.repository_owner }}/rimworld-game
       force: ${{ inputs.force || false }}
       branches: |
+        1.5=version-1.5
         1.6=public
+        1.7=unstable
     secrets:
       STEAM_USERNAME: ${{ secrets.STEAM_USERNAME }}
       STEAM_CONFIG_VDF_B64: ${{ secrets.STEAM_CONFIG_VDF_B64 }}
@@ -45,6 +47,9 @@ jobs:
       packages: read
     with:
       solution: Source/StickToYourSave/StickToYourSave.csproj
+      dotnet-version: |
+        8.0.x
+        10.0.x
       game-images: ${{ needs.images.outputs.image-refs }}
       # No test project in this mod yet.
       test: false
