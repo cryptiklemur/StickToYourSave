@@ -45,7 +45,9 @@ jobs:
           echo "resolved RimWorld ref: ${version:-unknown}"
 
       - name: dotnet build
-        run: dotnet build StickToYourSave.slnx -c Release --nologo --no-restore
+        run: |
+          dotnet build StickToYourSave.slnx -c Release --nologo --no-restore
+          npx --no-install verify-ship-list .
 
       - name: dotnet test
         run: |
