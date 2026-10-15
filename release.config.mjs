@@ -10,6 +10,7 @@ export default releaseConfig({
     mods: [
         {
             name: 'StickToYourSave',
+            title: 'Stick To Your Save',
             workshopId: '3765032020',
         },
     ],
