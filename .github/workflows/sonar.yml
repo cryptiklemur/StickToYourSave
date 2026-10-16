@@ -18,7 +18,7 @@ concurrency:
 jobs:
   images:
     name: game image
-    uses: RimWorks/mod-ci/.github/workflows/game-image.yml@v4
+    uses: RimWorks/mod-ci/.github/workflows/game-image.yml@v5
     permissions:
       contents: read
       packages: write
@@ -32,7 +32,7 @@ jobs:
   analyze:
     name: analyze
     needs: images
-    uses: RimWorks/mod-ci/.github/workflows/sonar.yml@v4
+    uses: RimWorks/mod-ci/.github/workflows/sonar.yml@v5
     permissions:
       contents: read
       packages: read

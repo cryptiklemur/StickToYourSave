@@ -57,7 +57,7 @@ jobs:
           passed=$(grep -oE 'Passed:[[:space:]]+[0-9]+' test-output.txt | grep -oE '[0-9]+' | tail -1)
           echo "TESTS_PASSED=${passed:-unknown}" >> "$GITHUB_ENV"
 
-      - uses: RimWorks/mod-ci/.github/actions/steam-republish@v4
+      - uses: RimWorks/mod-ci/.github/actions/steam-republish@v5
         with:
           solution: StickToYourSave.slnx
           workshop-id: ${{ vars.WORKSHOP_ID }}

@@ -75,7 +75,7 @@ jobs:
   publish:
     needs: release
     if: needs.release.outputs.published == 'true'
-    uses: RimWorks/mod-ci/.github/workflows/publish.yml@v4
+    uses: RimWorks/mod-ci/.github/workflows/publish.yml@v5
     permissions:
       contents: read
     secrets:
