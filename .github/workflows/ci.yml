@@ -73,7 +73,7 @@ jobs:
     name: ci gate
     if: always()
     needs: [images, build, prose, links]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
       - uses: RimWorks/mod-ci/.github/actions/gate@v5
         with:
